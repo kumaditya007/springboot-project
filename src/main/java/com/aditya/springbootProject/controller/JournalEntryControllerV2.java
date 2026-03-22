@@ -1,9 +1,9 @@
 package com.aditya.springbootProject.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,41 +12,45 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.aditya.springbootProject.Entity.JournalEntry;
+import com.aditya.springbootProject.entity.JournalEntry;
+import com.aditya.springbootProject.service.JournalEntryService;
 
 @RestController
 @RequestMapping("/journal")
-public class JournalEntryController {
+public class JournalEntryControllerV2 {
 
-  private Map<Long, JournalEntry> journalEnteries = new HashMap<>();
+  @Autowired
+  private JournalEntryService journalEntryService;
 
   @GetMapping
   public List<JournalEntry> getAll() {
 
-    return new ArrayList<>(journalEnteries.values());
+
+    return journalEntryService.getAll();
 
   }
 
   @PostMapping
-  public boolean createEntry(@RequestBody JournalEntry newEntry) {
+  public void createEntry(@RequestBody JournalEntry newEntry) {
 
-    journalEnteries.put(newEntry.getId(), newEntry);
+    newEntry.setDate(LocalDateTime.now());
 
-    return true;
+    journalEntryService.saveEntry(newEntry);
+
 
   }
 
   @GetMapping("/id/{myId}")
-  public JournalEntry getJournalEntryById(@PathVariable Long myId) {
+  public JournalEntry getJournalEntryById(@PathVariable String myId) {
 
-    return journalEnteries.get(myId);
+    return null;
 
   }
 
   @DeleteMapping("/id/{myId}")
-  public JournalEntry deleteJournalEntryById(@PathVariable Long myId) {
+  public JournalEntry deleteJournalEntryById(@PathVariable ObjectId myId) {
 
-    return journalEnteries.remove(myId);
+    return null;
 
   }
 
@@ -54,7 +58,7 @@ public class JournalEntryController {
   public JournalEntry updateJournalEntryById(@PathVariable Long myId,
       @RequestBody JournalEntry newEntry) {
 
-    return journalEnteries.put(myId, newEntry);
+    return null;
 
   }
 
